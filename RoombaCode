@@ -1,10 +1,11 @@
-//This is the programming for the Roomba//
+//This is the programming for the Roomba
 #include <kipr/wombat.h>
 
-//Variables//
+//Variables
 int clawMotor = 0;
 int extensionMotor = 1;
 int armServo = 0;
+int clawSwitch = 0;
 
 int main()
 {
@@ -33,11 +34,45 @@ enable_servos();
     msleep(1000);
     //Move armServo up
     set_servo_position(armServo, 100);
+    msleep(500);
+    motor(extensionMotor, 40);
+    msleep(1500);
     
+    //Locate minecart shaft
+    while(digital(clawSwitch) != 1)
+      {
+      create_drive_direct(20, -20);
+      }
+    //Close claw
+    motor(clawMotor, 40)
+    msleep(1500);
     
+
+    //Turn left and drop minecart
+    set_create_total_angle(0);
+    while(get_create_total_angle_amt > -20)
+      {
+      create_drive_direct(-20, 20);
+      }
     
+    //Open claw
+    motor(clawMotor, -40)
+    msleep(1500);
+   
+    //Turn right and back out
+    set_create_total_angle(0);
+    while(get_create_total_angle_amt < 20)
+      {
+      create_drive_direct(-20, 20);
+      }
     
-    
+    //Hopefully counts backwards Ethan is a brick
+    set_create_distance(0);
+    while(get_create_distance() > -100)
+      {
+      create_drive_direct(-20, -20);
+      }
+      
 //Go to second minecart
 
 //Move container to black zone
