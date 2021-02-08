@@ -1,4 +1,44 @@
 //This is the programming for the Roomba//
+#include <kipr/wombat.h>
 
 //Variables//
+int clawMotor = 0;
+int extensionMotor = 1;
+int armServo = 0;
 
+int main()
+{
+create_connect();
+enable_servos();
+//Go to first minecart
+  //Get in line
+    //Turn out of starting box
+    set_create_total_angle(0);
+    while(get_create_total_angle_amt < 90)
+      {
+      create_drive_direct(20, -20);
+      }
+      
+    //Drive Forward
+    set_create_distance(0);
+    while(get_create_distance() < 600)
+      {
+      create_drive_direct(20, 20);
+      }
+      
+    //Grab
+    //Give Slack
+    motor(clawMotor, -40);
+    motor(extensionMotor, -40);
+    msleep(1000);
+    //Move armServo up
+    set_servo_position(armServo, 100);
+    
+    
+    
+    
+    
+//Go to second minecart
+
+//Move container to black zone
+}
