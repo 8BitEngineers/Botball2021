@@ -1,5 +1,5 @@
 //This is the programming for the Roomba
-#include <kipr/botball.h>
+#include <kipr/wombat.h>
 
 //Variables
 int clawMotor = 0;
