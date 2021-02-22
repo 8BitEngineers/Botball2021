@@ -1,5 +1,5 @@
 //This is the programming for the Roomba
-#include <kipr/wombat.h>
+#include <kipr/botball.h>
 
 //Variables
 int clawMotor = 0;
@@ -9,24 +9,20 @@ int clawSwitch = 0;
 
 int main()
 {
-create_connect();
-enable_servos();
-//Go to first minecart
-  //Get in line
+    create_connect();
+    enable_servos();
+    //Go to first minecart
+    //Get in line
     //Turn out of starting box
-    set_create_total_angle(0);
-    while(get_create_total_angle_amt < 90)
-      {
-      create_drive_direct(20, -20);
-      }
-      
+
     //Drive Forward
     set_create_distance(0);
-    while(get_create_distance() < 600)
-      {
-      create_drive_direct(20, 20);
-      }
-      
+    while(get_create_distance() < 300)
+    {
+        create_drive_direct(100, 100);
+        
+    }
+
     //Grab
     //Give Slack
     motor(clawMotor, -40);
@@ -37,43 +33,41 @@ enable_servos();
     msleep(500);
     motor(extensionMotor, 40);
     msleep(1500);
-    
+
     //Locate minecart shaft
-    while(digital(clawSwitch) != 1)
-      {
-      create_drive_direct(20, -20);
-      }
+  ///  while(digital(clawSwitch) != 1)
+  //  {
+      //  create_drive_direct(20, -20);
+  //  }
+    create_spin_CW(20);
+    msleep(400);
     //Close claw
-    motor(clawMotor, 40)
+    motor(clawMotor, 40);
     msleep(1500);
-    
+
 
     //Turn left and drop minecart
-    set_create_total_angle(0);
-    while(get_create_total_angle_amt > -20)
-      {
-      create_drive_direct(-20, 20);
-      }
-    
+    create_spin_CCW(50);
+    msleep(1000);
+
     //Open claw
-    motor(clawMotor, -40)
+    motor(clawMotor, -40);
     msleep(1500);
-   
+
     //Turn right and back out
     set_create_total_angle(0);
-    while(get_create_total_angle_amt < 20)
-      {
-      create_drive_direct(-20, 20);
-      }
-    
+    create_spin_CW(50);
+    msleep(1000);
+
     //Hopefully counts backwards Ethan is a brick
     set_create_distance(0);
     while(get_create_distance() > -100)
-      {
-      create_drive_direct(-20, -20);
-      }
-      
-//Go to second minecart
+    {
+        create_drive_direct(-20, -20);
+    }
 
-//Move container to black zone
+    //Go to second minecart
+
+    //Move container to black zone
+    return 0;
 }
