@@ -1,73 +1,84 @@
-//This is the programming for the Roomba
-#include <kipr/wombat.h>
-
-//Variables
-int clawMotor = 0;
-int extensionMotor = 1;
-int armServo = 0;
-int clawSwitch = 0;
-
+#include <kipr/botball.h>
+int go_to_pos(s,x)
+{
+    int set=get_servo_position(s);
+    if (get_servo_position(s)>x) {
+        while(get_servo_position(s)>=x)
+        {
+            set_servo_position(s,set);
+            msleep(2);
+            set=set-1;
+        }
+    }
+    if (get_servo_position(s)<x) {
+        while(get_servo_position(s)<=x)
+        {
+            set_servo_position(s,set);
+            msleep(2);
+            set++;
+        }
+    }
+    return 0;
+}
+int frontServo = 0;
 int main()
 {
     create_connect();
     enable_servos();
-    //Go to first minecart
-    //Get in line
-    //Turn out of starting box
 
-    //Drive Forward
+    wait_for_light(0);
+    shut_down_in(60);
+
+    //Drive out of box
     set_create_distance(0);
-    while(get_create_distance() < 300)
+    while(get_create_distance() < 200)
     {
-        create_drive_direct(100, 100);
-        
+        create_drive_straight(100);
     }
-
-    //Grab
-    //Give Slack
-    motor(clawMotor, -40);
-    motor(extensionMotor, -40);
-    msleep(1000);
-    //Move armServo up
-    set_servo_position(armServo, 100);
+    create_stop();
+    go_to_pos(frontServo, 1250);
     msleep(500);
-    motor(extensionMotor, 40);
-    msleep(1500);
+    //turn towards astros
 
-    //Locate minecart shaft
-  ///  while(digital(clawSwitch) != 1)
-  //  {
-      //  create_drive_direct(20, -20);
-  //  }
-    create_spin_CW(20);
-    msleep(400);
-    //Close claw
-    motor(clawMotor, 40);
-    msleep(1500);
-
-
-    //Turn left and drop minecart
-    create_spin_CCW(50);
+    create_spin_CCW(200);
     msleep(1000);
+    //drive towards astros
 
-    //Open claw
-    motor(clawMotor, -40);
-    msleep(1500);
-
-    //Turn right and back out
-    set_create_total_angle(0);
-    create_spin_CW(50);
-    msleep(1000);
-
-    //Hopefully counts backwards Ethan is a brick
     set_create_distance(0);
-    while(get_create_distance() > -100)
+    while(get_create_distance() < 700)
     {
-        create_drive_direct(-20, -20);
+        create_drive_straight(100);
+
     }
+    create_stop();
+    //prep claw
 
-    //Go to second minecart
+    go_to_pos(frontServo, 1200);
+    create_spin_CW(600);
+    msleep(1000);
+    //scoop
 
-    //Move container to black zone
-    return 0;
-}
+    go_to_pos(frontServo, 1500);
+    create_spin_CCW(300);
+    msleep(1000);
+    set_create_distance(100);
+    while(get_create_distance() > 0)
+    {
+        create_drive_straight(-100);
+    }
+    create_stop();
+    //Go down to pull
+    go_to_pos(frontServo, 100);
+    msleep(100);
+    set_create_distance(0);
+    while(get_create_distance() < 100)
+    {
+        create_drive_straight(100);
+    }
+    create_spin_CCW(200);
+    msleep(500);
+    set_create_distance(0);
+    while(get_create_distance() < 100)
+    {
+        create_drive_straight(100);
+    }
