@@ -22,7 +22,7 @@ int cliffValue = 1550;
 int closeClaw = 200;
 int openClaw = 1100;
 int frontLever = 4;
-
+//Changed values for speed
 int go_to_pos(s,x)
 {
     int set=get_servo_position(s);
@@ -31,7 +31,7 @@ int go_to_pos(s,x)
         {
             set_servo_position(s,set);
             msleep(2);
-            set=set-1;
+            set=set-3;
         }
     }
     if (get_servo_position(s)<x) {
@@ -39,6 +39,8 @@ int go_to_pos(s,x)
         {
             set_servo_position(s,set);
             msleep(2);
+            set++;
+            set++;
             set++;
         }
     }
@@ -148,25 +150,27 @@ int main()
 
     while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
     {
-        mav(leftMotor, 640);
-        mav(rightMotor, -620);
+        mav(leftMotor, 960);
+        mav(rightMotor, -930);
     }
     ao();
     mav(leftMotor, -640);
     mav(rightMotor, 600);
     msleep(50);
     ao();
+    
+    //Original: -600, -600, 1900
     mav(leftMotor, -600);
     mav(rightMotor, -600);
     msleep(1900);
     ao();
 
     //Grabbing Material Transport
-	//Original
+    //Original: -640, 620
     while(analog(frontDistance) < 2800)
     {
-        mav(leftMotor, -640);
-        mav(rightMotor, 620);
+        mav(leftMotor, -960);
+        mav(rightMotor, 930);
     }
     ao();
     mav(leftMotor, -620);
@@ -197,17 +201,21 @@ int main()
     mav(rightMotor, 600);
     msleep(2000);
     ao();
+    //Original: -400, 600
     while(analog(topSensor) < 2000)
     {
         if(analog(frontSensor) < 3900)
         {
-            mav(leftMotor, -400);
-            mav(rightMotor, 600);
+            mav(leftMotor, -600);
+            mav(rightMotor, 750);
+            msleep(50);
         }
+        //Original: -640, 400
         if(analog(frontSensor) > 3900)
         {
-            mav(leftMotor, -640);
-            mav(rightMotor, 400);
+            mav(leftMotor, -750);
+            mav(rightMotor, 600);
+            msleep(50);
         }
     }
     ao();
@@ -247,8 +255,8 @@ int main()
     go_to_pos(frontServo, 800);
     while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
     {
-        mav(leftMotor, 640);
-        mav(rightMotor, -600);
+        mav(leftMotor, 960);
+        mav(rightMotor, -900);
     }
     ao();
     go_to_pos(frontServo, 100);
@@ -268,12 +276,14 @@ int main()
         mav(leftMotor, -640);
         mav(rightMotor, 620);
     }
+    printf("Point 1");
     mav(leftMotor, 640);
     mav(rightMotor, -620);
     msleep(1200);
     mav(leftMotor, 640);
     mav(rightMotor, 620);
     msleep(1700);
+    printf("Point 2");
     while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
     {
         mav(leftMotor, 640);
@@ -285,29 +295,55 @@ int main()
         motor(rightMotor, 40);
     }
     ao();
+    printf("Point 3");
+    /* Goes in wrong direction?
     mav(leftMotor, 300);
     mav(rightMotor, 300);
-    msleep(200);
+    msleep(200); */
+    printf("Point 4");
+
+    //ADDED
+    printf("Added code");
+    //Left goes faster so that it starts on correct side of black line
+    mav(leftMotor, -950);
+    mav(rightMotor, 850);
+    msleep(1600);
+
+
+    //End added code May 14
+
     ao();
     go_to_pos(frontServo, 800);
     ao();
-    while(frontLever < 1)
+    //you had "frontLever" here.  I assume you meant digital(frontLever)
+    while(digital(frontLever) < 1)
     {
         if(analog(frontSensor) < rampLine)
-        {
-            mav(leftMotor, -400);
-            mav(rightMotor, 600);
+        {     
+            mav(leftMotor, -600);
+            mav(rightMotor, 800);
+            msleep(10);
         }
         if(analog(frontSensor) > rampLine)
         {
-            mav(leftMotor, -640);
-            mav(rightMotor, 400);
+            mav(leftMotor, -860);
+            mav(rightMotor, 600);
+            msleep(10);
         }
+        mav(leftMotor, -860);
+        mav(rightMotor, 800);
+        msleep(15);
     }
+    printf("Point 5");
+    //Originally msleep(500)
     mav(leftMotor, 600);
     mav(rightMotor, -600);
-    msleep(500);
+    msleep(800);
 
+    //ADDED CODE
+    mav(leftMotor, -400);
+    mav(rightMotor, 800);
+    msleep(1500);
     //turning left onto cliff platform
 
     motor(leftMotor, 67);
@@ -346,7 +382,7 @@ int main()
     mav(rightMotor, 300);
     msleep(1500);
     ao();
-    go_to_pos(frontServo, 2000);
+    go_to_pos(frontServo, 2100);
     go_to_pos(clawServo, closeClaw);
     return 0;
 }
