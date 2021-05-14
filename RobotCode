@@ -1,0 +1,352 @@
+#include <kipr/wombat.h>
+#include<time.h>
+int leftBumper = 1;
+int rightBumper = 0;
+int leftMotor = 1;
+int rightMotor = 0;
+int sideServo = 2;
+int frontServo = 1;
+int clawServo = 3;
+int ticksOfRight = 0;
+int ticksOfLeft = 0;
+int frontSensor = 0;
+int backSensor = 3;
+int frontDistance = 2;
+int topSensor = 1;
+int leftFrontBumper = 2;
+int rightFrontBumper = 3;
+int ramp = 3800;
+int rampLine = 4000;
+int topLine = 4000;
+int cliffValue = 1550;
+int closeClaw = 200;
+int openClaw = 1100;
+int frontLever = 4;
+
+int go_to_pos(s,x)
+{
+    int set=get_servo_position(s);
+    if (get_servo_position(s)>x) {
+        while(get_servo_position(s)>=x)
+        {
+            set_servo_position(s,set);
+            msleep(2);
+            set=set-1;
+        }
+    }
+    if (get_servo_position(s)<x) {
+        while(get_servo_position(s)<=x)
+        {
+            set_servo_position(s,set);
+            msleep(2);
+            set++;
+        }
+    }
+    return 0;
+}
+int main()
+{
+    //setup
+
+    enable_servos();
+    go_to_pos(clawServo, openClaw);
+    set_servo_position(sideServo, 1700);
+    go_to_pos(frontServo, 100);
+
+    //start code
+
+    //wait_for_light(4);
+    shut_down_in(119);
+
+    //align for ore cubes
+    /*
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(1000);
+    mav(leftMotor, 600);
+    mav(rightMotor, 600);
+    msleep(1800);
+    ao();
+    while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
+    {
+        mav(leftMotor, 640);
+        mav(rightMotor, -620);
+    }
+    ao();
+    go_to_pos(frontServo, 1250);
+    go_to_pos(clawServo, 2000);
+    ao();
+
+    //grab green cubes
+
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(3000);
+    ao();
+    go_to_pos(clawServo, closeClaw);
+    ao();
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(1000);
+    mav(leftMotor, -640);
+    mav(rightMotor, -600);
+    msleep(3000);
+    ao();
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(1500);
+    ao();
+    go_to_pos(clawServo, openClaw);
+    go_to_pos(frontServo, 900);
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(1500);
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(500);
+
+    //grab red cubes
+
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(1000);
+    mav(leftMotor, 640);
+    mav(rightMotor, 600);
+    msleep(2450);
+    ao();
+    go_to_pos(frontServo, 1250);
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(1400);
+    ao();
+    go_to_pos(clawServo, closeClaw);
+    mav(leftMotor, -640);
+    mav(rightMotor, -600);
+    msleep(2750);
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(1000);
+    ao();
+    go_to_pos(frontServo, 1200);
+    go_to_pos(clawServo, openClaw);
+    go_to_pos(frontServo, 100);
+
+    //move to ramp
+
+    mav(leftMotor, 640);
+    mav(rightMotor, 600);
+    msleep(1000);
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(5000);
+    mav(leftMotor, 640);
+    mav(leftMotor, 600);
+    msleep(2250);
+    */
+
+    //align for coupler
+
+    while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
+    {
+        mav(leftMotor, 640);
+        mav(rightMotor, -620);
+    }
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(50);
+    ao();
+    mav(leftMotor, -600);
+    mav(rightMotor, -600);
+    msleep(1900);
+    ao();
+
+    //Grabbing Material Transport
+	//Original
+    while(analog(frontDistance) < 2800)
+    {
+        mav(leftMotor, -640);
+        mav(rightMotor, 620);
+    }
+    ao();
+    mav(leftMotor, -620);
+    mav(rightMotor, 600);
+    msleep(500);
+    ao();
+    set_servo_position(sideServo, 1960);
+    msleep(300);
+    ao();
+    mav(leftMotor, 620);
+    mav(rightMotor, -600);
+    msleep(3000);
+    ao();
+
+    //move coupler under ramp
+
+    mav(leftMotor, 600);
+    mav(rightMotor, 600);
+    msleep(2500);
+    mav(leftMotor, -600);
+    mav(rightMotor, -600);
+    msleep(750);
+    ao();
+    go_to_pos(clawServo, closeClaw);
+    go_to_pos(frontServo, 1250);
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(2000);
+    ao();
+    while(analog(topSensor) < 2000)
+    {
+        if(analog(frontSensor) < 3900)
+        {
+            mav(leftMotor, -400);
+            mav(rightMotor, 600);
+        }
+        if(analog(frontSensor) > 3900)
+        {
+            mav(leftMotor, -640);
+            mav(rightMotor, 400);
+        }
+    }
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, 600);
+    msleep(500);
+    ao();
+
+    while(analog(topSensor) > 1500)
+    {
+        if(analog(frontSensor) < 3900)
+        {
+            mav(leftMotor, -400);
+            mav(rightMotor, 600);
+        }
+        if(analog(frontSensor) > 3900)
+        {
+            mav(leftMotor, -640);
+            mav(rightMotor, 400);
+        }
+    }
+
+    ao();
+    go_to_pos(sideServo, 1800);
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, -600);
+    msleep(50);
+
+    //move to ramp
+
+    set_servo_position(sideServo, 1700);
+    mav(leftMotor, 640);
+    mav(rightMotor, -600);
+    msleep(8000);
+    ao();
+    go_to_pos(frontServo, 800);
+    while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
+    {
+        mav(leftMotor, 640);
+        mav(rightMotor, -600);
+    }
+    ao();
+    go_to_pos(frontServo, 100);
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, 620);
+    msleep(200);
+    ao();
+    mav(leftMotor, -640);
+    mav(rightMotor, -620);
+    msleep(1800);
+
+    //orientation to go up ramp
+
+    while((digital(leftFrontBumper) == 0) || (digital(rightFrontBumper) == 0))
+    {
+        mav(leftMotor, -640);
+        mav(rightMotor, 620);
+    }
+    mav(leftMotor, 640);
+    mav(rightMotor, -620);
+    msleep(1200);
+    mav(leftMotor, 640);
+    mav(rightMotor, 620);
+    msleep(1700);
+    while((digital(leftBumper) == 0) || (digital(rightBumper) == 0))
+    {
+        mav(leftMotor, 640);
+        mav(rightMotor, -620);
+    }
+    while(analog(frontSensor) < ramp)
+    {
+        motor(leftMotor, -45);
+        motor(rightMotor, 40);
+    }
+    ao();
+    mav(leftMotor, 300);
+    mav(rightMotor, 300);
+    msleep(200);
+    ao();
+    go_to_pos(frontServo, 800);
+    ao();
+    while(frontLever < 1)
+    {
+        if(analog(frontSensor) < rampLine)
+        {
+            mav(leftMotor, -400);
+            mav(rightMotor, 600);
+        }
+        if(analog(frontSensor) > rampLine)
+        {
+            mav(leftMotor, -640);
+            mav(rightMotor, 400);
+        }
+    }
+    mav(leftMotor, 600);
+    mav(rightMotor, -600);
+    msleep(500);
+
+    //turning left onto cliff platform
+
+    motor(leftMotor, 67);
+    motor(rightMotor, 60);
+    msleep(1150);
+    motor(leftMotor, -67);
+    motor(rightMotor, 60);
+    msleep(600);
+
+    //preparing claw
+
+    go_to_pos(frontServo, 1200);
+    set_servo_position(sideServo, 1960);
+    go_to_pos(clawServo, openClaw);
+
+
+    //moving towards Titanium Oxide
+
+    while(analog(topSensor) < cliffValue)
+    {
+        if(analog(frontSensor) < topLine)
+        {
+            motor(leftMotor, -67);
+            motor(rightMotor, 40);
+        }
+        if(analog(frontSensor) > topLine)
+        {
+            motor(leftMotor, -45);
+            motor(rightMotor, 60);
+        }
+    }
+    mav(leftMotor, -300);
+    mav(rightMotor, -300);
+    msleep(100);
+    mav(leftMotor, -300);
+    mav(rightMotor, 300);
+    msleep(1500);
+    ao();
+    go_to_pos(frontServo, 2000);
+    go_to_pos(clawServo, closeClaw);
+    return 0;
+}
